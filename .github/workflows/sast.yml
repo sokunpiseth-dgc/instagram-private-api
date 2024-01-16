@@ -17,7 +17,7 @@ jobs:
       - name: Run Bearer SAST
         run: |
           ./bin/bearer init
-          ./bin/bearer scan . --format json --output sast-report.json
+          ./bin/bearer scan . --format json --report dataflow --output sast-report.json | jq
 
       - name: Upload SAST Report to AWS S3
         uses: aws-actions/configure-aws-credentials@v2
