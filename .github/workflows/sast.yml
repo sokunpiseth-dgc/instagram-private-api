@@ -1,0 +1,29 @@
+name: Bearer SAST and AWS S3
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install bearer
+        run: curl -sfL https://raw.githubusercontent.com/Bearer/bearer/main/contrib/install.sh | sh
+
+      - name: Run Bearer SAST
+        run: ./bin/bearer scan . --output sast-report.json
+
+      - name: Upload SAST Report to AWS S3
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      
+      - name: Upload results
+        run: |
+          aws s3 cp ./sast-report.json s3://dgc-github/eslint-results/
