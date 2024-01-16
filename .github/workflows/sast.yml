@@ -16,7 +16,6 @@ jobs:
 
       - name: Run Bearer SAST
         run: |
-          ./bin/bearer init
           ./bin/bearer scan . --config-file	.github/workflows/bearer.yml | jq
 
       - name: Upload SAST Report to AWS S3
@@ -28,4 +27,4 @@ jobs:
       
       - name: Upload results
         run: |
-          aws s3 cp ./sast-report.json s3://dgc-github/eslint-results/
+          aws s3 cp bearer-sast-report.json s3://dgc-github/eslint-results/
